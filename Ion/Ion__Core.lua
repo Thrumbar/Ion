@@ -73,8 +73,8 @@ IonGDB = {
 	sbars = {},
 	sbtns = {},
 
-	draenorbars = {},
-	draenorbtns = {},
+	zoneabilitybars = {},
+	zoneabilitybtns = {},
 
 	buttonLoc = {-0.85, -111.45},
 	buttonRadius = 87.5,
@@ -84,17 +84,18 @@ IonGDB = {
 	snapToTol = 28,
 
 	mainbar = false,
-	draenorbar = false,
+	zoneabilitybar = false,
 	vehicle = false,
 
 	firstRun = true,
 	xbarFirstRun = true,
 	sbarFirstRun = true,
-	draenorbarFirstRun = true,
+	zoneabilitybarFirstRun = true,
 
 	betaWarning = true,
 
 	animate = true,
+	showmmb = true,
 }
 
 --CharacterDB?
@@ -108,8 +109,8 @@ IonCDB = {
 	sbars = {},
 	sbtns = {},
 
-	draenorbars = {},
-	draenorbtns = {},
+	zoneabilitybars = {},
+	zoneabilitybtns = {},
 
 	selfCast = false,
 	focusCast = false,
@@ -267,6 +268,15 @@ local options = {
 					get = function() return IonGDB.mainbar end,
 					width = "full",
 				},
+				MMbutton = {
+					order = 2,
+					name = "Display Minimap Button",
+					desc = "Toggles the minimap button.",
+					type = "toggle",
+					set =  function() ION:toggleMMB() end,
+					get = function() return IonGDB.showmmb end,
+					width = "full"
+				},
 				--[[
 				DraenorBar = {
 					order = 2,
@@ -418,8 +428,8 @@ local defaults = {
 			sbars = {},
 			sbtns = {},
 
-			draenorbars = {},
-			draenorbtns = {},
+			zoneabilitybars = {},
+			zoneabilitybtns = {},
 
 			buttonLoc = {-0.85, -111.45},
 			buttonRadius = 87.5,
@@ -429,13 +439,13 @@ local defaults = {
 			snapToTol = 28,
 
 			mainbar = false,
-			draenorbar = true,
+			zoneabilitybar = true,
 			vehicle = false,
 
 			firstRun = true,
 			xbarFirstRun = true,
 			sbarFirstRun = true,
-			draenorbarFirstRun = true,
+			zoneabilitybarFirstRun = true,
 
 			betaWarning = true,
 
@@ -452,8 +462,8 @@ local defaults = {
 			sbars = {},
 			sbtns = {},
 
-			draenorbars = {},
-			draenorbtns = {},
+			zoneabilitybars = {},
+			zoneabilitybtns = {},
 
 			selfCast = false,
 			focusCast = false,
@@ -548,8 +558,9 @@ local slashFunctions = {
 	[44] = "BlizzBar",
 	[45] = "",
 	[46] = "Animate",
-	--[47] = "DraenorBar",
-	[48] = "Debuger",
+	[47] = "MoveSpecButtons",
+	--[48] = "Debuger",
+	--[50] = "MoveSpecButton",
 }
 
 
@@ -669,9 +680,13 @@ function ION:UpdateSpellIndex()
 			if (spellID) then
 				ION.sIndex[spellID] = spellData
 			end
-
+--[[
 			if (icon and not icons[icon:upper()]) then
 				ICONS[#ICONS+1] = icon:upper(); icons[icon:upper()] = true
+			end
+			--]]
+				if (icon and not icons[icon]) then
+				ICONS[#ICONS+1] = icon; icons[icon] = true
 			end
 		end
 	end
@@ -775,8 +790,11 @@ function ION:UpdateSpellIndex()
 						ION.sIndex[spellID] = spellData
 					end
 
-					if (icon and not icons[icon:upper()]) then
-						ICONS[#ICONS+1] = icon:upper(); icons[icon:upper()] = true
+					--if (icon and not icons[icon:upper()]) then
+						--ICONS[#ICONS+1] = icon:upper(); icons[icon:upper()] = true
+					--end
+					if (icon and not icons[icon]) then
+						ICONS[#ICONS+1] = icon; icons[icon] = true
 					end
 				end
 			end
@@ -813,9 +831,12 @@ function ION:UpdatePetSpellIndex()
 				ION.sIndex[spellID] = spellData
 			end
 
-			if (icon and not icons[icon:upper()]) then
-				ICONS[#ICONS+1] = icon:upper(); icons[icon:upper()] = true
-			end
+			if (icon and not icons[icon]) then
+				ICONS[#ICONS+1] = icon; icons[icon] = true
+			end			
+			--if (icon and not icons[icon:upper()]) then
+			--	ICONS[#ICONS+1] = icon:upper(); icons[icon:upper()] = true
+			--end
 		end
 
 		i = i + 1
@@ -870,16 +891,17 @@ end
 -- the itemID from toyCache where needed
 function ION:UpdateToyData()
 	-- note filter settings
-	local filterCollected = C_ToyBox.GetFilterCollected()
-	local filterUncollected = C_ToyBox.GetFilterUncollected()
+	local filterCollected = C_ToyBox.GetCollectedShown()
+	local filterUncollected = C_ToyBox.GetUncollectedShown()
 	local sources = {}
 	for i=1,10 do
-		sources[i] = C_ToyBox.IsSourceTypeFiltered(i)
+		sources[i] = C_ToyBox.IsSourceTypeFilterChecked(i)
 	end
 	-- set filters to all toys
-	C_ToyBox.SetFilterCollected(true)
-	C_ToyBox.SetFilterUncollected(false) -- we don't need to uncollected toys
-	C_ToyBox.ClearAllSourceTypesFiltered()
+	C_ToyBox.SetCollectedShown(true)
+	C_ToyBox.SetUncollectedShown(true) -- we don't need to uncollected toys
+	--C_ToyBox.ClearAllSourceTypesFiltered()
+	C_ToyBox.SetAllSourceTypeFilters(true)
 	C_ToyBox.SetFilterString("")
 
 	-- fill cache with itemIDs = name
@@ -890,10 +912,10 @@ function ION:UpdateToyData()
 	end
 
 	-- restore filters
-	C_ToyBox.SetFilterCollected(filterCollected)
-	C_ToyBox.SetFilterUncollected(filterUncollected)
+	C_ToyBox.SetCollectedShown(filterCollected)
+	C_ToyBox.SetUncollectedShown(filterUncollected)
 	for i=1,10 do
-		C_ToyBox.SetFilterSourceType(i,sources[i])
+		C_ToyBox.SetSourceTypeFilter(i, not sources[i])
 	end
 end
 
@@ -902,11 +924,16 @@ end
 ---	If a companion is not displaying its tooltip or cooldown, then the item in the macro probably is not in the database 
 function ION:UpdateCompanionData()
 
-	_G.C_PetJournal.ClearAllPetSourcesFilter()
-	_G.C_PetJournal.ClearAllPetTypesFilter()
+	--_G.C_PetJournal.ClearAllPetSourcesFilter()  
+	--_G.C_PetJournal.ClearAllPetTypesFilter()
+
 	_G.C_PetJournal.ClearSearchFilter()
-	_G.C_PetJournal.AddAllPetSourcesFilter()
-	_G.C_PetJournal.AddAllPetTypesFilter()
+
+	--_G.C_PetJournal.AddAllPetSourcesFilter()
+	--_G.C_PetJournal.AddAllPetTypesFilter()
+
+	_G.C_PetJournal.SetAllPetSourcesChecked(true)
+	_G.C_PetJournal.SetAllPetTypesChecked(true)
 	local numpet = select(1, C_PetJournal.GetNumPets())
 	
 	for i=1,numpet do
@@ -922,38 +949,35 @@ function ION:UpdateCompanionData()
 				ION.cIndex[spell:lower().."()"] = companionData
 				ION.cIndex[petID] = companionData
 
-				if (icon and not icons[icon:upper()]) then
-					ICONS[#ICONS+1] = icon:upper(); icons[icon:upper()] = true
+				if(type(icon) == "number") then
+					if (icon and not icons[icon]) then
+						ICONS[#ICONS+1] = icon; icons[icon] = true
+					end
 				end
 			end
 		end
 	end
 
-	for i=1,C_MountJournal.GetNumMounts() do
-		local creatureName, creatureID, _, active, summonable, source, isFavorite, isFactionSpecific, faction, unknown, owned = C_MountJournal.GetMountInfo(i)
+	local mountIDs = C_MountJournal.GetMountIDs()
+	for i,id in pairs(mountIDs) do
+		local creatureName , spellID = C_MountJournal.GetMountInfoByID(id) --, creatureID, _, active, summonable, source, isFavorite, isFactionSpecific, faction, unknown, owned = C_MountJournal.GetMountInfoByID(i)
 		local link = GetSpellLink(creatureName)
-		local spellID
-		if (link) then
-			_, spellID = link:match("(spell:)(%d+)")
-			spellID = tonumber(spellID)
-		end
 
 		if (spellID) then
 			local spell, _, icon = GetSpellInfo(spellID)
 			if (spell) then
-				local companionData = SetCompanionData("MOUNT", i, creatureID, creatureName, spellID, icon)
+				local companionData = SetCompanionData("MOUNT", i, spellID, creatureName, spellID, icon)
 				ION.cIndex[spell:lower()] = companionData
 				ION.cIndex[spell:lower().."()"] = companionData
 				ION.cIndex[spellID] = companionData
 
-				if (icon and not icons[icon:upper()]) then
-					ICONS[#ICONS+1] = icon:upper(); icons[icon:upper()] = true
+				if (icon and not icons[icon]) then
+					ICONS[#ICONS+1] = icon; icons[icon] = true
 				end
 			end
 		end
 	end
 end
-
 
 local temp = {}
 
@@ -967,7 +991,12 @@ function ION:UpdateIconIndex()
 	wipe(temp)
 	GetMacroIcons(temp)
 
-	for k,v in ipairs(temp) do
+	--for k,v in ipairs(temp) do
+	for k,icon in ipairs(temp) do
+		if (not icons[icon]) then
+			ICONS[#ICONS+1] = icon; icons[icon] = true
+		end
+	--[[
 		if(type(v) == "number") then
 			TempTexture:SetToFileData(v);
 			icon = TempTexture:GetTexture()
@@ -978,6 +1007,7 @@ function ION:UpdateIconIndex()
 		if (not icons[icon:upper()]) then
 			ICONS[#ICONS+1] = icon:upper(); icons[icon:upper()] = true
 		end
+		--]]
 	end
 
 	--wipe(temp)
@@ -1397,11 +1427,9 @@ end
 
 
 function ION:MinimapButton_OnHide(minimap)
-
 	minimap:UnlockHighlight()
 	IonMinimapButtonDragFrame:Hide()
 end
-
 
 function ION:MinimapButton_OnEnter(minimap)
 	GameTooltip_SetDefaultAnchor(GameTooltip, minimap)
@@ -1440,6 +1468,14 @@ function ION:MinimapMenuClose()
 	IonMinimapButton.popup:Hide()
 end
 
+function ION:toggleMMB()
+	if IonGDB.showmmb then
+		IonMinimapButton:Hide()
+	else
+		IonMinimapButton:Show()
+	end
+	IonGDB.showmmb = not IonGDB.showmmb
+end
 
 function ION.SubFramePlainBackdrop_OnLoad(self)
 	self:SetBackdrop({
@@ -1700,6 +1736,48 @@ function ION:Animate()
 end
 
 
+local function is_valid_spec_id(id, num_specs)
+	return id and id > 0 and id <= num_specs
+end
+
+
+local function get_profile()
+	local char_name = UnitName("player")
+	local realm_name = GetRealmName()
+	local char_and_realm_name = string.format("%s - %s", char_name, realm_name)
+
+	local profile_key = _G.IonProfilesDB.profileKeys[char_and_realm_name]
+	local profile = _G.IonProfilesDB.profiles[profile_key]
+
+	return profile
+end
+
+
+function  ION:MoveSpecButtons(msg)
+	local num_specs = GetNumSpecializations()
+	local spec_1_id, spec_2_id = msg:match("^(%d+)%s+(%d+)")
+	spec_1_id = tonumber(spec_1_id)
+	spec_2_id = tonumber(spec_2_id)
+
+	if (not is_valid_spec_id(spec_1_id, num_specs)
+		or not is_valid_spec_id(spec_2_id, num_specs)) then
+
+		return print(string.format("%s <spec 1 id> <spec 2 id>", "/ion MoveSpecButtons"))
+	end
+
+	local char_db = _G.IonCDB
+	local profile = get_profile(profile_name)
+
+	for idx, val in ipairs(char_db['buttons']) do 
+			val[spec_2_id] = val[spec_1_id]
+		end
+
+	_G.IonCDB = char_db
+	profile.IonCDB = char_db
+	print("Buttons for layout "..spec_1_id.." copied to layout "..spec_2_id)
+end
+
+
 function ION:CreateBar(index, class, id)
 	local data, show = ION.RegisteredBarData[class]
 
@@ -1847,7 +1925,7 @@ function ION:CreateNewObject(class, id, firstRun)
 		object:SetID(0)
 		object.objTIndex = index
 		object.objType = data.objType:gsub("%s", ""):upper()
-
+		--object:LoadData(GetSpecialization(), "homestate")
 		object:LoadData(GetActiveSpecGroup(), "homestate")
 
 		if (firstRun) then
@@ -1966,6 +2044,8 @@ function ION:ToggleButtonGrid(show, hide)
 		btn[1]:SetGrid(show, hide)
 	end
 end
+
+
 
 
 function ION:ToggleMainMenu(show, hide)
@@ -2217,6 +2297,9 @@ local function control_OnEvent(self, event, ...)
 		--Fix for Titan causing the Main Bar to not be hidden
 		if (IsAddOnLoaded("Titan")) then TitanUtils_AddonAdjust("MainMenuBar", true) end
 		ION:ToggleBlizzBar(GDB.mainbar)
+		if not GDB.showmmb then
+			IonMinimapButton:Hide()
+		end
 
 		CDB.fix07312012 = true
 
@@ -2227,7 +2310,7 @@ local function control_OnEvent(self, event, ...)
 		end
 
 	elseif (event == "PLAYER_SPECIALIZATION_CHANGED" or event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_LOGOUT" or event == "PLAYER_LEAVING_WORLD") then
-		SPEC.cSpec = GetActiveSpecGroup()
+		SPEC.cSpec = GetSpecialization()
 
 	elseif (event == "ACTIVE_TALENT_GROUP_CHANGED" or
 		  event == "LEARNED_SPELL_IN_TAB" or
@@ -2250,7 +2333,8 @@ local function control_OnEvent(self, event, ...)
 		ION.level = UnitLevel("player")
 
 	elseif ( event == "TOYS_UPDATED" )then
-		ION:UpdateToyData()
+
+		if not ToyBox or not ToyBox:IsShown() then ION:UpdateToyData() end
 	end
 
 end
@@ -2305,7 +2389,7 @@ StaticPopupDialogs["ReloadUI"] = {
 function IonProfile:RefreshConfig()
 	IonCDB = self.db.profile["IonCDB"]
 	IonGDB = self.db.profile["IonGDB"]
-	IonSpec = {cSpec = GetActiveSpecGroup()}
+	IonSpec = {cSpec = GetSpecialization()}
 	defGDB, GDB, defCDB, CDB, defSPEC, SPEC = CopyTable(IonGDB), CopyTable(IonGDB), CopyTable(IonCDB), CopyTable(IonCDB), CopyTable(IonSpec), CopyTable(IonSpec)
 	IONButtonProfileUpdate()
 --IONBarProfileUpdate()
@@ -2397,3 +2481,5 @@ function ION.Debug(...)
 	if frame:IsVisible() then debugger:Display() end
 	--@end-debug@
 end
+
+

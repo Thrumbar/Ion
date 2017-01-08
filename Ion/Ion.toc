@@ -1,9 +1,9 @@
-## Interface: 60200
+## Interface: 70000 
 ## Title: Ion
 ## Notes: Ion: Action Bar & Object Mananger
 ## Author: Connor Chenoweth (aka Maul)
 ## X-Credits-Maintainer: SLOKnightfall
-## Version: Helium  1.0
+## Version: Helium  2.0.1 - Legion Release
 ## DefaultState: enabled
 ## SavedVariables: IonGDB, IonItemCache, IonProfilesDB
 ## SavedVariablesPerCharacter: IonCDB, IonSpec, 
@@ -23,6 +23,7 @@ Libs\AceGUI-3.0\AceGUI-3.0.xml
 Libs\AceConfig-3.0\AceConfig-3.0.xml
 Libs\AceDB-3.0\AceDB-3.0.xml
 Libs\AceDBOptions-3.0\AceDBOptions-3.0.xml
+Libs\filedatalib\FileDataLib.lua
 
 Ion_Localizations.xml
 
@@ -38,7 +39,7 @@ Ion_SnapTo.lua
 
 Ion_ExtraBar.lua
 Ion_StanceBar.lua
-Ion_DraenorBar.lua
+Ion_ZoneAbilityBar.lua
 
 Ion-Broker.lua
 

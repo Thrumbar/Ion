@@ -157,6 +157,8 @@ L.SLASH_CMD46_DESC = "Toggle Ion's Orb Animation"
 L.SLASH_CMD48 = "Debug"
 L.SLASH_CMD48_DESC = "Degutool"
 
+L.SLASH_CMD47 = "MoveSpecButtons"
+L.SLASH_CMD47_DESC = "Copies the buttons from one spec to a second(|cffffff00/ion MoveSpecButtons <Old_Spec#> <New_Spec#>|r)"
 
 L.BARTYPES_USAGE = "Usage: |cffffff00/ion create <type>|r\n"
 L.BARTYPES_TYPES = "     Types -\n"
@@ -444,6 +446,8 @@ L.GUI_HARM = "Harm"
 L.GUI_HELP = "Help"
 L.GUI_SPEC1 = "Display button for spec 1"
 L.GUI_SPEC2 = "Display button for spec 2"
+L.GUI_SPEC3 = "Display button for spec 3"
+L.GUI_SPEC4 = "Display button for spec 4"
 
 
 L.SPELL_TARGETING_OPTIONS = "Spell Target Options"
@@ -468,4 +472,4 @@ L.SPELL_TARGETING_SELF_CAST_RIGHTCLICK_SELECT = "Select the Self-Cast Modifier"
 
 L.SPELL_TARGETING_MODIFIER_NONE_REMINDER = "\"None\" as modifier for Self & Focus Casting means its disabled. \nFor Mouse-Over Casting it means its always active, and no modifier is required."
 
-L.DRAENOR_BAR_BORDER = "Show Bar Border"
+L.ZONEABILITY_BAR_BORDER = "Show Bar Border"

@@ -1,0 +1,9 @@
+## Interface: 70000
+## Title: FileDataLib
+## Author: TOM_RUS
+## Notes: FileDataLib
+## X-Curse-Packaged-Version: r20160725191301
+## X-Curse-Project-Name: FileDataLib
+## X-Curse-Project-ID: filedatalib
+## X-Curse-Repository-ID: wow/filedatalib/mainline
+FileDataLib.lua

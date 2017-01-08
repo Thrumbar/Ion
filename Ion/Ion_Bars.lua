@@ -1066,7 +1066,6 @@ function BAR:LoadObjects(init)
 		object = _G[self.objPrefix..objID]
 
 		if (object) then
-
 			self.objTable[object.objTIndex][2] = 0
 
 			object:SetData(self)

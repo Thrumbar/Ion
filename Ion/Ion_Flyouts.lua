@@ -368,13 +368,13 @@ function BUTTON:filter_mount(data)
 			excluded = false
 		end
 
-		for i=1,C_MountJournal.GetNumMounts() do
-			local mountName, mountSpellId, mountTexture, _, canSummon, _, isFavorite = C_MountJournal.GetMountInfo(i)
+		for i,mountID in ipairs(C_MountJournal.GetMountIDs()) do
+			local mountName, mountSpellId, mountTexture, _, canSummon, _, isFavorite = C_MountJournal.GetMountInfoByID(mountID)
 			local spellName = GetSpellInfo(mountSpellId) -- sometimes mount name isn't same as spell name >:O
 			mountName = mountName:lower()
 			spellName = spellName:lower()
 			if mountName and canSummon then
-				local _,_,_,_,mountType = C_MountJournal.GetMountInfoExtra(i)
+				local _,_,_,_,mountType = C_MountJournal.GetMountInfoExtraByID(mountID)
 				local canFly = mountType==247 or mountType==248
 				if (mountName:match(arg) or spellName:match(arg)) and excluded then
 					exclusions[spellName] = true

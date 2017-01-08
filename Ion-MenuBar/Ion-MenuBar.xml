@@ -32,12 +32,20 @@
 			</OnMouseDown>
 			<OnMouseUp>
 				if ( self.down ) then
-					self.down = nil
-					ToggleCharacter("PaperDollFrame")
-					return
+					self.down = nil;
+					if ( self:IsMouseOver() ) then
+						ToggleCharacter("PaperDollFrame");
+					end
+					Ion.UpdateMicroButtons();
+					return;
 				end
-				Ion.CharacterButton_SetPushed(self)
-				self.down = 1
+				if ( self:GetButtonState() == "NORMAL" ) then
+					Ion.CharacterMicroButton_SetPushed();
+					self.down = 1;
+				else
+					Ion.CharacterMicroButton_SetNormal();
+					self.down = 1;
+				end
 			</OnMouseUp>
 			<OnEvent>
 				Ion.CharacterButton_OnEvent(self, event, ...)
@@ -83,6 +91,11 @@
 
 				Ion.CreateAnimationLayer(self)
 			</OnLoad>
+			<OnShow>
+				if (IsKioskModeEnabled() and select(2, UnitClass("player") ~= "DEMONHUNTER")) then
+					self:Disable();
+				end
+			</OnShow>
 			<OnEvent>
 				Ion.TalentButton_OnEvent(self, event, ...)
 			</OnEvent>
@@ -104,7 +117,15 @@
 				self.newbieText = _G.NEWBIE_TOOLTIP_ACHIEVEMENT
 				self.minLevel = 10	--Just used for display. But we know that it will become available by level 10 due to the level 10 achievement.
 				Ion.AddMenuElement(self)
+				if (IsKioskModeEnabled()) then
+					self:Disable();
+				end
 			</OnLoad>
+			<OnShow>
+				if (IsKioskModeEnabled()) then
+					self:Disable();
+				end
+			</OnShow>
 			<OnEvent>
 				Ion.AchievementButton_OnEvent(self, event, ...)
 			</OnEvent>
@@ -175,8 +196,16 @@
 					self:Disable()
 					self.disabledTooltip = _G.ERR_RESTRICTED_ACCOUNT_TRIAL
 				end
+				if (IsKioskModeEnabled()) then
+					self:Disable();
+				end
 				Ion.AddMenuElement(self)
 			</OnLoad>
+			<OnShow>
+				if (IsKioskModeEnabled()) then
+					self:Disable();
+				end
+			</OnShow>
 			<OnEvent>
 				Ion.GuildButton_OnEvent(self, event, ...)
 			</OnEvent>
@@ -190,11 +219,23 @@
 				self.tooltipText = MicroButtonTooltipText(_G.DUNGEONS_BUTTON, "TOGGLEGROUPFINDER")
 				self.newbieText = _G.NEWBIE_TOOLTIP_LFGPARENT
 				self.minLevel = math.min(_G.SHOW_LFD_LEVEL, _G.SHOW_PVP_LEVEL)
+				if (IsKioskModeEnabled()) then
+					self:Disable();
+				end
 				Ion.AddMenuElement(self)
 			</OnLoad>
+			<OnShow>
+				if (IsKioskModeEnabled()) then
+					self:Disable();
+				end
+			</OnShow>
 			<OnEvent>
+				if (IsKioskModeEnabled()) then
+					return;
+				end
 				self.tooltipText = MicroButtonTooltipText(_G.DUNGEONS_BUTTON, "TOGGLEGROUPFINDER")
 				self.newbieText = _G.NEWBIE_TOOLTIP_LFGPARENT
+
 				Ion.updateMicroButtons()
 			</OnEvent>
 			<OnClick>
@@ -244,6 +285,11 @@
 			<OnLoad>
 				Ion.EJButton_OnLoad(self)
 			</OnLoad>
+			<OnShow>
+				if (IsKioskModeEnabled()) then
+					self:Disable();
+				end
+			</OnShow>
 			<OnEvent>
 				Ion.EJButton_OnEvent(self, event, ...)
 			</OnEvent>
@@ -259,10 +305,21 @@
 				LoadMicroButtonTextures(self, "BStore")
 				self.tooltipText = _G.BLIZZARD_STORE
 				self:RegisterEvent("STORE_STATUS_CHANGED")
+								if (IsKioskModeEnabled()) then
+					self:Disable();
+				end
 				Ion.AddMenuElement(self)
 			</OnLoad>
+			<OnShow>
+				if (IsKioskModeEnabled()) then
+					self:Disable();
+				end
+			</OnShow>
 			<OnEvent>
 				Ion.updateMicroButtons()
+				if (IsKioskModeEnabled()) then
+					self:Disable();
+				end
 			</OnEvent>
 			<OnClick function="ToggleStoreUI"/>
 		</Scripts>
@@ -382,6 +439,9 @@
 				self.tooltipText = _G.HELP_BUTTON
 				self.newbieText = _G.NEWBIE_TOOLTIP_HELP
 				Ion.AddMenuElement(self)
+				if (IsKioskModeEnabled()) then
+					self:Disable();
+				end
 			</OnLoad>
 			<OnClick function="ToggleHelpFrame"/>
 		</Scripts>

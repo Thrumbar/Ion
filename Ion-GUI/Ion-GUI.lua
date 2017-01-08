@@ -53,7 +53,7 @@ local chkOptions = {
 	[15] = { [0] = "TOOLTIPS", L.TOOLTIPS_OPT, 1, "ToolTipSet" },
 	[16] = { [0] = "TOOLTIPS", L.TOOLTIPS_ENH, 0.9, "ToolTipSet", "enhanced" },
 	[17] = { [0] = "TOOLTIPS", L.TOOLTIPS_COMBAT, 0.9, "ToolTipSet", "combat" },
-	[18] = { [0] = "DRAENOR", L.DRAENOR_BAR_BORDER, 1, "HideDraenorBorder"},
+	[18] = { [0] = "ZONEABILITY", L.ZONEABILITY_BAR_BORDER, 1, "HideZoneAbilityBorder"},
 }
 
 local adjOptions = {
@@ -84,7 +84,7 @@ local swatchOptions = {
 	[8] = { [0] = "AURAIND", L.AURAIND, 1, "AuraIndSet", true, true, "buffcolor", "debuffcolor" },
 }
 
-local specoveride = GetActiveSpecGroup()
+local specoveride = GetActiveSpecGroup() or 1
 
 local addonName = ...
 
@@ -2420,14 +2420,36 @@ function ION:MacroEditorUpdate()
 		IBTNE["spec"..buttonSpec]:SetChecked(true)
 
 		--Sets current spec marker to proper tab
-		IBTNE.activespc:SetParent(IBTNE["spec"..GetActiveSpecGroup()])
+		IBTNE.activespc:SetParent(IBTNE["spec"..GetSpecialization()])
 		IBTNE.activespc:SetPoint("LEFT")
 		IBTNE.spec1:Show()
 		IBTNE.spec2:Show()
+		IBTNE.spec3:Show()
+		local player_Class = select(2, UnitClass("player"))
+
+		if (player_Class == "DEMONHUNTER") then
+			IBTNE.spec1:SetWidth(104)
+			IBTNE.spec2:SetWidth(104)
+			IBTNE.savestate:SetPoint("LEFT", IBTNE.spec2, "RIGHT", 0, 0)
+			IBTNE.spec3:Hide()
+			IBTNE.spec4:Hide()
+		elseif (player_Class == "DRUID") then
+			IBTNE.spec1:SetWidth(62)
+			IBTNE.spec2:SetWidth(62)
+			IBTNE.spec3:SetWidth(62)
+			IBTNE.spec4:SetWidth(62)
+			IBTNE.spec4:Show()
+			IBTNE.savestate:SetPoint("LEFT", IBTNE.spec4, "RIGHT", 0, 0)
+			IBTNE.savestate:SetWidth(62)
+		else
+			IBTNE.spec4:Hide()
+		end
 	else
 		buttonSpec = 1
 		IBTNE.spec1:Hide()
 		IBTNE.spec2:Hide()
+		IBTNE.spec3:Hide()
+		IBTNE.spec4:Hide()
 	end
 
 	local data = button.specdata[buttonSpec][state]
@@ -2476,7 +2498,7 @@ function ION.ButtonEditorUpdate(reset)
 
 		IonButtonEditor.macroicon.icon:SetTexture("")
 
-		specoveride = GetActiveSpecGroup()
+		specoveride = GetSpecialization() or 1 --GetActiveSpecGroup()
 	end
 
 	ION.ActionListScrollFrameUpdate()
@@ -2672,7 +2694,14 @@ local function updateIconList()
 
 	for index, icon in ipairs(ICONS) do
 		if (search) then
-			if (icon:lower():find(search:lower()) or index == 1) then
+			local icon_path
+			if type(icon) == "number" then
+				 icon_path = GetFileName(icon)
+			else 
+				icon_path = icon
+			end
+			--if (icon:lower():find(search:lower()) or index == 1) then
+			if (icon_path:lower():find(search:lower()) or index == 1) then
 				tinsert(IconList, icon)
 			end
 		else
@@ -2895,7 +2924,7 @@ function ION:ButtonEditor_OnLoad(frame)
 	end
 
 	f = CreateFrame("CheckButton", nil, frame.macro, "IonCheckButtonTemplate1")
-	f:SetWidth(104)
+	f:SetWidth(68)
 	f:SetHeight(33.5)
 	f:SetPoint("LEFT", frame.reset_button, "RIGHT", -1, 1.25)
 	f:SetScript("OnClick", function(self) SpecOnClick(self); specoveride = 1 ; ION.ButtonEditorUpdate() end)
@@ -2916,7 +2945,7 @@ function ION:ButtonEditor_OnLoad(frame)
 	frame.activespc = f
 
 	f = CreateFrame("CheckButton", nil, frame.macro, "IonCheckButtonTemplate1")
-	f:SetWidth(104)
+	f:SetWidth(68)
 	f:SetHeight(33.5)
 	f:SetPoint("LEFT", frame.spec1, "RIGHT", 0, 0)
 	f:SetScript("OnClick", function(self) SpecOnClick(self); specoveride = 2 ; ION.ButtonEditorUpdate() end)
@@ -2925,10 +2954,30 @@ function ION:ButtonEditor_OnLoad(frame)
 	f.tooltipText = L.GUI_SPEC2
 	frame.spec2 = f; frame.specs[f] = frame.spec2
 
+	f = CreateFrame("CheckButton", nil, frame.macro, "IonCheckButtonTemplate1")
+	f:SetWidth(68)
+	f:SetHeight(33.5)
+	f:SetPoint("LEFT", frame.spec2, "RIGHT", 0, 0)
+	f:SetScript("OnClick", function(self) SpecOnClick(self); specoveride = 3 ; ION.ButtonEditorUpdate() end)
+	f:SetChecked(nil)
+	f.text:SetText("Spec3")
+	f.tooltipText = L.GUI_SPEC3
+	frame.spec3 = f; frame.specs[f] = frame.spec3
+
+	f = CreateFrame("CheckButton", nil, frame.macro, "IonCheckButtonTemplate1")
+	f:SetWidth(68)
+	f:SetHeight(33.5)
+	f:SetPoint("LEFT", frame.spec3, "RIGHT", 0, 0)
+	f:SetScript("OnClick", function(self) SpecOnClick(self); specoveride = 4 ; ION.ButtonEditorUpdate() end)
+	f:SetChecked(nil)
+	f.text:SetText("Spec4")
+	f.tooltipText = L.GUI_SPEC4
+	frame.spec4 = f; frame.specs[f] = frame.spec4
+
 	f = CreateFrame("Button", nil, frame.macro, "UIPanelButtonTemplate")--"IonCheckButtonTemplate1")
 	f:SetWidth(104)
 	f:SetHeight(33.5)
-	f:SetPoint("LEFT", frame.spec2, "RIGHT", 0, 0)
+	f:SetPoint("LEFT", frame.spec3, "RIGHT", 0, 0)
 	f:SetScript("OnClick", function(self)
 						frame.macroedit.edit:ClearFocus()
 						frame.nameedit:ClearFocus()

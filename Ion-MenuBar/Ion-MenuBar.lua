@@ -1,7 +1,7 @@
 --Ion Menu Bar, a World of Warcraft® user interface addon.
 --Copyright© 2006-2014 Connor H. Chenoweth, aka Maul - All rights reserved.
 
---Most of this code is based off of the 6.2.3 version of Blizzard's
+--Most of this code is based off of the 7.0 version of Blizzard's
 -- MainMenuBarMicroButtons.lua & MainMenuBarMicroButtons.xml files 
 
 
@@ -95,21 +95,27 @@ function ION.CreateAnimationLayer(self)
 
 	-- Flashing in
 	local fade1 = flasher:CreateAnimation("Alpha")
-	fade1:SetDuration(0.5)
-	fade1:SetChange(1)
+	fade1:SetDuration(1)
+	fade1:SetSmoothing("IN")
+	--fade1:SetChange(1)
+	fade1:SetFromAlpha(0)
+	fade1:SetToAlpha(1)
 	fade1:SetOrder(1)
 
 	-- Holding it visible for 1 second
-	fade1:SetEndDelay(.5)
+	--fade1:SetEndDelay(.5)
 
 	-- Flashing out
 	local fade2 = flasher:CreateAnimation("Alpha")
-	fade2:SetDuration(0.5)
-	fade2:SetChange(-1)
+	fade2:SetDuration(1)
+	fade2:SetSmoothing("OUT")
+	--fade2:SetChange(-1)
+	fade2:SetFromAlpha(1)
+	fade2:SetToAlpha(0)
 	fade2:SetOrder(3)
 
 	-- Holding it for 1 second before calling OnFinished
-	fade2:SetEndDelay(.5)
+	--fade2:SetEndDelay(.5)
 
 	flasher:SetScript("OnFinished", function() f:SetAlpha(0) end)
 
@@ -162,8 +168,15 @@ local function updateMicroButtons()
 		IMicroButtonPulse(IonTalentButton, "Stop")
 		IonTalentMicroButtonAlert:Hide()
 	else
-		if ( playerLevel < _G.SHOW_SPEC_LEVEL ) then
-			if not InCombatLockdown() then IonTalentButton:Disable() end
+		--if ( playerLevel < _G.SHOW_SPEC_LEVEL ) then
+		if ( playerLevel < _G.SHOW_SPEC_LEVEL or (IsKioskModeEnabled() and select(2, UnitClass("player")) ~= "DEMONHUNTER") ) then
+
+			if not InCombatLockdown() then 
+				IonTalentButton:Disable() 
+				if (IsKioskModeEnabled()) then
+					SetKioskTooltip(TalentMicroButton);
+				end
+			end
 		else
 			if not InCombatLockdown() then IonTalentButton:Enable() end
 			IonTalentButton:SetButtonState("NORMAL")
@@ -188,8 +201,12 @@ local function updateMicroButtons()
 	end
 
 	ION.updateTabard()
-	if ( _G.IsTrialAccount() or (_G.IsVeteranTrialAccount() and not _G.IsInGuild()) or factionGroup == "Neutral" ) then
+	--if ( _G.IsTrialAccount() or (_G.IsVeteranTrialAccount() and not _G.IsInGuild()) or factionGroup == "Neutral" ) then
+	if ( _G.IsTrialAccount() or (_G.IsVeteranTrialAccount() and not _G.IsInGuild()) or factionGroup == "Neutral" or _G.IsKioskModeEnabled() ) then
 		IonGuildButton:Disable()
+			if (_G.IsKioskModeEnabled()) then
+			_G.SetKioskTooltip(GuildMicroButton);--Check
+		end
 	elseif ( ( GuildFrame and GuildFrame:IsShown() ) or ( LookingForGuildFrame and LookingForGuildFrame:IsShown() ) ) then
 		if not InCombatLockdown() then
 			IonGuildButton:Enable()
@@ -216,7 +233,11 @@ local function updateMicroButtons()
 	if ( PVEFrame and PVEFrame:IsShown() ) then
 		IonLFDButton:SetButtonState("PUSHED", true)
 	else
-		if ( playerLevel < IonLFDButton.minLevel or factionGroup == "Neutral" ) then
+		--if ( playerLevel < IonLFDButton.minLevel or factionGroup == "Neutral" ) then
+		if ( _G.IsKioskModeEnabled() or playerLevel < LFDMicroButton.minLevel or factionGroup == "Neutral" ) then
+			if (IsKioskModeEnabled()) then
+				SetKioskTooltip(LFDMicroButton);
+			end
 			if not InCombatLockdown() then IonLFDButton:Disable() end
 		else
 			if not InCombatLockdown() then IonLFDButton:Enable() end
@@ -240,6 +261,9 @@ local function updateMicroButtons()
 			if not InCombatLockdown() then IonAchievementButton:Disable() end
 		end
 	end
+
+
+--	EJMicroButton_UpdateDisplay();  --New??
 
 	if ( EncounterJournal and EncounterJournal:IsShown() ) then
 		IonEJButton:SetButtonState("PUSHED", true)
@@ -296,6 +320,9 @@ ION.updateMicroButtons = updateMicroButtons
 
 
 function ION.AchievementButton_OnEvent(self, event, ...)
+	if (IsKioskModeEnabled()) then
+		return;
+	end
 	if ( event == "UPDATE_BINDINGS" ) then
 		self.tooltipText = MicroButtonTooltipText(_G.ACHIEVEMENT_BUTTON, "TOGGLEACHIEVEMENT")
 	else
@@ -305,6 +332,10 @@ end
 
 
 function ION.GuildButton_OnEvent(self, event, ...)
+	if (IsKioskModeEnabled()) then
+		return;
+	end
+
 	if ( event == "UPDATE_BINDINGS" ) then
 		if ( IsInGuild() ) then
 			IonGuildButton.tooltipText = MicroButtonTooltipText(_G.GUILD, "TOGGLEGUILDTAB")
@@ -390,7 +421,23 @@ function ION.CharacterButton_SetNormal(self)
 end
 
 
+
+
+--[[New
+
+function MainMenuMicroButton_SetPushed()
+	MainMenuMicroButton:SetButtonState("PUSHED", true);
+end
+
+function MainMenuMicroButton_SetNormal()
+	MainMenuMicroButton:SetButtonState("NORMAL");
+end
+--]]
+
 function ION.TalentButton_OnEvent(self, event, ...)
+	if (IsKioskModeEnabled()) then
+		return;
+	end
 	if (event == "PLAYER_LEVEL_UP") then
 		local level = ...
 		if (level == _G.SHOW_SPEC_LEVEL) then
@@ -483,7 +530,11 @@ function ION.EJButton_OnLoad(self)
 	_G.SetDesaturation(self:GetDisabledTexture(), true)
 	self.tooltipText = MicroButtonTooltipText(_G.ENCOUNTER_JOURNAL, "TOGGLEENCOUNTERJOURNAL")
 	self.newbieText = _G.NEWBIE_TOOLTIP_ENCOUNTER_JOURNAL
-	self.minLevel = _G.SHOW_EJ_LEVEL
+	if (IsKioskModeEnabled()) then
+		self:Disable();
+	end
+
+	self.minLevel = math.min(_G.SHOW_LFD_LEVEL, _G.SHOW_PVP_LEVEL);
 
 	--events that can trigger a refresh of the adventure journal
 	self:RegisterEvent("VARIABLES_LOADED")
@@ -494,13 +545,19 @@ end
 
 
 function ION.EJButton_OnEvent(self, event, ...)
+	if (IsKioskModeEnabled()) then
+		return;
+	end
+
 	local arg1 = ...
 	if( event == "UPDATE_BINDINGS" ) then
 		self.tooltipText = MicroButtonTooltipText(_G.ADVENTURE_JOURNAL, "TOGGLEENCOUNTERJOURNAL")
 		self.newbieText = _G.NEWBIE_TOOLTIP_ENCOUNTER_JOURNAL
-
 		updateMicroButtons()
 	elseif( event == "VARIABLES_LOADED" ) then
+		self:UnregisterEvent("VARIABLES_LOADED");
+		self.varsLoaded = true;
+	
 		local showAlert = GetCVarBool("showAdventureJournalAlerts")
 		if( showAlert ) then
 			local lastTimeOpened = tonumber(GetCVar("advJournalLastOpened"))
@@ -517,14 +574,45 @@ function ION.EJButton_OnEvent(self, event, ...)
 			
 			EJMicroButton_UpdateAlerts(true)
 		end
+		
 	elseif ( event == "PLAYER_ENTERING_WORLD" ) then
-		_G.C_AdventureJournal.UpdateSuggestions()	
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD");
+		self.playerEntered = true;
+		-- _G.C_AdventureJournal.UpdateSuggestions()	
 	elseif ( event == "UNIT_LEVEL" and arg1 == "player" ) then		
 		EJMicroButton_UpdateNewAdventureNotice(true)  --Check
 	elseif event == "PLAYER_AVG_ITEM_LEVEL_UPDATE" then
 		local playerLevel = _G.UnitLevel("player")
 		if ( playerLevel == _G.MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()]) then
 			EJMicroButton_UpdateNewAdventureNotice(false)--Check
+		end
+	elseif ( event == "ZONE_CHANGED_NEW_AREA" ) then
+		self:UnregisterEvent("ZONE_CHANGED_NEW_AREA");
+		self.zoneEntered = true;
+	end
+
+	if( event == "PLAYER_ENTERING_WORLD" or event == "VARIABLES_LOADED" or event == "ZONE_CHANGED_NEW_AREA" ) then
+		if( self.playerEntered and self.varsLoaded and self.zoneEntered) then
+			EJMicroButton_UpdateDisplay();
+			if( self:IsEnabled() ) then
+				C_AdventureJournal.UpdateSuggestions();
+				
+				local showAlert = not GetCVarBool("hideAdventureJournalAlerts");
+				if( showAlert ) then
+					-- display alert if the player hasn't opened the journal for a long time
+					local lastTimeOpened = tonumber(GetCVar("advJournalLastOpened"));
+					if ( GetServerTime() - lastTimeOpened > EJ_ALERT_TIME_DIFF ) then
+						IonEJMicroButtonAlert:Show();
+						IMicroButtonPulse(IonEJButton);
+					end
+
+					if ( lastTimeOpened ~= 0 ) then
+						SetCVar("advJournalLastOpened", GetServerTime() );
+					end
+					
+					EJMicroButton_UpdateAlerts(true);
+				end
+			end
 		end
 	end
 end
@@ -545,6 +633,26 @@ local function EJMicroButton_ClearNewAdventureNotice()
 	IonEJButton.NewAdventureNotice:Hide()
 end
 
+local function EJMicroButton_UpdateDisplay()
+	local frame = EJMicroButton;
+	if ( EncounterJournal and EncounterJournal:IsShown() ) then
+		frame:SetButtonState("PUSHED", true);
+	else
+		local disabled = not C_AdventureJournal.CanBeShown();
+		if ( IsKioskModeEnabled() or disabled ) then
+			frame:Disable();
+			if (IsKioskModeEnabled()) then
+				SetKioskTooltip(frame);
+			elseif ( disabled ) then
+				frame.disabledTooltip = FEATURE_NOT_YET_AVAILABLE;
+			end
+			EJMicroButton_ClearNewAdventureNotice();
+		else
+			frame:Enable();
+			frame:SetButtonState("NORMAL");
+		end
+	end
+end
 
 local function EJMicroButton_UpdateAlerts( flag )
 	if ( flag ) then
@@ -571,7 +679,7 @@ function ION.MainMenuMicroButton_ShowAlert(alert, text, tutorialIndex)
 	alert.Text:SetText(text)
 	alert:SetHeight(alert.Text:GetHeight()+42)
 	alert.tutorialIndex = tutorialIndex
-	alert:Show()
+	--LDB alert:Show()
 	return alert:IsShown()
 end
 

@@ -1,8 +1,8 @@
-## Interface: 60200
+## Interface: 70000
 ## Title: Ion: Status Bars
 ## Author: Maul
 ## X-Credits-Maintainer: SLOKnightfall
-## Version: Helium  1.0
+## Version: Helium  2.0.1 - Legion Release
 ## Notes: Status bars for Ion
 ## DefaultState: enabled
 ## Dependencies: Ion

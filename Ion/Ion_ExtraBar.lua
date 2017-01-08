@@ -304,17 +304,9 @@ function XBTN:SetAux()
 end
 
 function XBTN:SetExtraButtonTex()
-
 	if (GetOverrideBarSkin) then
-
-		local texture = GetOverrideBarSkin()
-
-		if (texture and texture:find("ExtraButton")) then
-			self.style:SetTexture(texture)
-		else
-			self.style:SetTexture("Interface\\ExtraButton\\Default")
-			--self.style:SetTexture("Interface\\ExtraButton\\BrewmoonKeg")
-		end
+		local texture = GetOverrideBarSkin() or "Interface\\ExtraButton\\Default"
+		self.style:SetTexture(texture)
 	end
 end
 

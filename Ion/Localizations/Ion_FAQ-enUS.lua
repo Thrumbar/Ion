@@ -11,14 +11,6 @@ L.LINE3 = "TEST"
 L.LINE4 = "TEST"
 L.LINE5 = "TEST"
 
-L.FAQ_BAR_CONFIGURE = "Bar Configiration"
-L.FAQ_BAR_CONFIGURE_GENERAL_OPTIONS_TITLE = "General Options"
-L.FAQ_BAR_CONFIGURE_BAR_STATES_TITLE = "Bar States"
-L.FAQ_BAR_CONFIGURE_SPELL_TARGET_TITLE = "Spell Target Options"
-
-L.FAQ_MACRO_EDITOR = "Macro Editor"
-
-
 L.FAQ = "F.A.Q."
 L.FAQ_LONG = "Frequently Asked Questions"
 
@@ -66,12 +58,105 @@ Updates & Additions
 *Flyouts*
 -Flyouts have been updated to provide additional functional and to fix some bugs.  Some of the flyout commands have either changed or have been removed.  Please see the Flyout section of the FAQ for full information.]]
 
+L.FAQ_BAR_CONFIGURE_TITLE = "Bar Configiration"
+L.FAQ_BAR_CONFIGURE = [[|cffffd200Bar Editor Mode|r
+To enter the Bar Editor, left click on the ION icon or type "/ion config" into the chat window. You will know that the mode is enabled because any hidden bars (IE the Pet or Extra Action Bars) will be displayed and the bars will display a highlight & name on mouse over.
 
+To exit the Bar Editor Mode, left click the ION icon, enter the text line command, or hit the Escape key. Once you leave this mode, any bars set to hidden will disappear once again.
+
+|cffffd200Bar Configuration Menu|r
+To open the Bar Configuration Menu, right click on any bar when the Bar Editor Mode is enabled. The first time the menu is opened it will be on the general options tab. If it is opened a second time after being closed, it will open to the last displayed tab.
+]]
+
+L.FAQ_BAR_CONFIGURE_GENERAL_OPTIONS_TITLE = "General Options"
+L.FAQ_BAR_CONFIGURE_GENERAL_OPTIONS = [[|cffffd200Bar Listing Section|r
+To the far left of the menu there will be a section that lists all of the bars that have been created. Clicking on a name will select that bar and update the menu to display the options for the selected bar.
+
+|cffffd200Bar Name Field|r
+To the right of the Bar Listing, there is a text field that displays the name of the currently selected bar in white. You can rename the bar by clicking in the text field and editing the text. To save any changes press the Enter button when finished.
+
+|cffffd200Bar Display Options|r
+Under the Bar Name Field are the display options for the bar. These options allow you to change how the bar will be displayed. 
+
+|cffffd200Auto Hide:|r   When enabled, then the bar will automatically be hidden until you mouse over it again.
+|cffffd200Show Grid:|r  When enabled, empty grid boxes on a bar will be displayed.
+|cffffd200Snap To:|r  When enabled, repositioning a bar close to another bar will cause it to snap to so it will be centered with the other bar.
+|cffffd200Up Clicks:|r  When selected, actions will trigger when the bound key is released.
+|cffffd200Down Clicks:|r  When selected, actions will trigger when the bound key is pressed.
+|cffffd200Dual Spec:|r  When enabled, the bar will automatically swap when your character changes spec. 
+|cffffd200Hidden:|r  When selected, the bar will be completely hidden. The only way to see the bar is to be in the edit mode. If a bar is set to be hidden, it will have a red tint to it when shown in the edit mode.
+|cffffd200Lock Actions:|r  When enabled, you will no longer be able to drag items from the bars. 
+|cffffd200Unlock on <Shift, Ctrl, Alt> :|r  When Lock Actions is enabled, these options will be shown. Selecting any of these options will allow you to drag items from locked bars when the corresponding key is held.
+|cffffd200Enable Tooltips:|r  When enabled, tooltips will be shown when you mouse over an item on the bar.
+|cffffd200Enhanced:|r  If tooltips are enabled, this option will be displayed. If selected, then enhanced tooltips will be shown if available.
+|cffffd200Hide In Combat:|r  If tooltips are enabled, this option will be displayed. If selected, then all tooltips will be hidden while a player is in combat.
+
+|cffffd200Bar Layout Options|r
+To the left of the Bar Display Options is the Bar Layout options. These settings give you the ability to change the layout of the bars.
+
+|cffffd200Scale:|r This sets the scale of the bar. The default value is 1. Changing this to a smaller number will shrink the bar, while increasing the number will make the bar get larger.
+|cffffd200Shape:|r Changes the button layout of the bar. 
+|cffffd200Columns:|r Will only be displayed when Linear is selected in the Shape selector. Default is Off. Increasing the count will divide the number of buttons on a bar into the entered number of columns.
+|cffffd200Arc Start:|r  Will only be displayed when one of the Circle options is selected in the Shape selector. Sets the current bar's starting arc location (in degrees).
+|cffffd200Arc Length:|r  Will only be displayed when one of the Circle options is selected in the Shape selector.  Sets the current bar's arc length (in degrees).
+|cffffd200Horizontal Pad:|r Sets the current bar's horizontal padding.
+|cffffd200Vertical Pad:|r Sets the current bar's vertical padding.
+|cffffd200H+V Pad:|r Adjust both horizontal and vertical padding of the current bar incrementally.
+|cffffd200Strata:|r Changes the strata that the bar will be shown on. The lower the strata, then the more likely other items may get displayed over it.
+|cffffd200Alpha:|r Changes the transparency of a bar.
+|cffffd200Alpha up:|r Choosing one of these options will cause a bar's transparency setting to be temporarily disabled when the chosen action occurs.
+|cffffd200A/U Speed:|r This is how fast a bar's transparency will change when the Alpha Up action occurs.
+|cffffd200X Pos:|r Changes the current bar's horizontal axis position.
+|cffffd200Y Pos:|r Changes tje current bar's vertical axis position
+
+|cffffd200Create Bar Button|r
+At the bottom left of the option menu is the Create Bar Button. Use this button to add additional bars. Once selected, you will be prompted to choose what type of bar to create. After you have selected a type, the new bar will appear on screen and in the Bar Listing Section. Newly created bars will have a button count of 0.
+
+|cffffd200Button Count & Add/Remove Button Arrows|r
+At the bottom center of the option menu is the current count of how many buttons the selected bar has. On either side are arrows that when clicked will increase or decrease the button count.
+
+|cffffd200Delete Current Bar|r
+At the bottom left of the option menu is the Delete Current Bar Button. When pressed, you will be given a Yes/No choice to confirm the deletion of the currently selected bar. If you select Yes, the bar will be deleted and removed from the screen & listing. This option cannot be undone.
+]]
+
+
+
+L.FAQ_BAR_CONFIGURE_BAR_STATES_TITLE = "Bar States"
+
+L.FAQ_BAR_CONFIGURE_BAR_STATES = [[|cffffd200Bar States Selector|r
+The Bar States options allows for custom states and visibility triggers to be added to a bar.  A bar state is what items are currently shown on it. Adding additional states will allow you to automatically change what is displayed when a set state is triggered.  The default state is called the home state.
+
+|cffffd200Preset Action States|r
+|cffffd200Paged:|r  When this is selected you can set 6 different pages of buttons.  The ability to switch between the pages is via the game's key binding settings.  The settings are Next & Previous Action Bar found under the Action Bar section.
+|cffffd200Stance:|r  This option is only available if a character has different stances available.  When selected, switching stances will change the displayed buttons.
+|cffffd200Pet:|r  When this is selected you can have the bar change whenever a character gains control of a pet.
+
+|cffffd200Custom Action States|r
+Ion allows you to create your own custom bar states.  This is done by entering the desired state conditions, separated by a semicolon.  If you enter an improperly formatted state, an error message will be displayed in the chat window. It is advised not to use any Preset Action States when using custom states.  Custom Actions state can be formed by using the majority of the default game macro conditionals, with "no" being added to the front of the conditional to check for a false state.  IE [nocombat]
+
+Example:  [actionbar:1];[stance:1];[stance3,stealth];[mounted]
+
+|cffffd200Bar Visibility Toggles|r
+These options allow you to customize when a bar should be displayed or hidden.  If a selection has a green mark next to it, then the bar will be shown when that condition is met.  By unselecting the option, the bar will be hidden if the condition is met.]]
+
+
+
+L.FAQ_BAR_CONFIGURE_SPELL_TARGET_TITLE = "Spell Target Options"
+L.FAQ_BAR_CONFIGURE_SPELL_TARGET = [[Spell target options allow you to automatically add certain cast modifiers to spells added to the bar.  Only spells dragged to the bar from the spell book will have these modifiers added.  A way to check to see if a spell will be affected is to look at the button using the macro editor.  If the macro has "#autowrite" at the beginning, then it can use the targeting options. 
+
+|cffffd200Self-Cast by Modifier:|r  When enabled, any spell cast while holding the selected modifier key will try to be cast on your character. Note the selected modifier for this setting is global and will be the same for every bar.  Changing it on one bar will change it for all.
+
+|cffffd200Focus-Cast by modifier:|r  When enabled, any spell cast while holding the selected modifier key will try to be cast on your character's focus target. Note the selected modifier for this setting is global and will be the same for every bar.  Changing it on one bar will change it for all.
+
+|cffffd200Right-Click Self-cast:|r When enabled, any spell cast by right-clicking on the button will try to be cast on your character
+
+|cffffd200Mouse-Over Casting:|r  When enabled, any spell cast while holding the selected modifier key will try to be cast on the mob that the mouse cursor is currently over.  If the modifier for this option is set to "None" then it will always be on.]]
+
+L.FAQ_MACRO_EDITOR = "Macro Editor"
 L.FLYOUT = "Flyout"
 L.FLYOUT_FAQ = [[Ion allows for the creation of flyout menus of spells, items or companions. It accomplishes this by adding a new macro command and building the menu based on several options. The following are the instructions on how to go about making a custom flyout menu via the ION Button Macro Editor:
 
 Format -  /flyout <type>:<keyword>:<shape>:<flyout anchor point>:<macro button anchor point>:<columns|radius>:<click|mouse>:<show/hide flyout arrow>
-
 
 
 Types: Use as many comma-delimited types as you want (ex: "spell, item") 

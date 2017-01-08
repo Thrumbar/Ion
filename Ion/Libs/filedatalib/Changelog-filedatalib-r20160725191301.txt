@@ -1,0 +1,6 @@
+TOM_RUS:
+	- anim, skin, wmo, html, bone, phys files filtered.
+	- toc bump
+	- Update to latest build
+	- Fix toc
+	- First commit
